@@ -3,13 +3,25 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: ClubHub API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: members
+    description: Member operations
+  - name: events
+    description: Event operations
+  - name: attendance
+    description: Attendance operations
+  - name: tasks
+    description: Task operations
+  - name: fundraisers
+    description: Fundraiser operations
+  - name: dashboard
+    description: Dashboard operations
 paths:
   /healthz:
     get:
@@ -24,6 +36,414 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /members:
+    get:
+      operationId: listMembers
+      tags: [members]
+      summary: List all members
+      responses:
+        "200":
+          description: List of members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Member"
+    post:
+      operationId: createMember
+      tags: [members]
+      summary: Create a member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+
+  /members/{id}:
+    get:
+      operationId: getMember
+      tags: [members]
+      summary: Get a member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateMember
+      tags: [members]
+      summary: Update a member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteMember
+      tags: [members]
+      summary: Delete a member
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /events:
+    get:
+      operationId: listEvents
+      tags: [events]
+      summary: List all events
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+    post:
+      operationId: createEvent
+      tags: [events]
+      summary: Create an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+
+  /events/{id}:
+    get:
+      operationId: getEvent
+      tags: [events]
+      summary: Get an event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateEvent
+      tags: [events]
+      summary: Update an event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteEvent
+      tags: [events]
+      summary: Delete an event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /attendance:
+    get:
+      operationId: listAttendance
+      tags: [attendance]
+      summary: List all attendance records
+      parameters:
+        - name: eventId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: memberId
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of attendance records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Attendance"
+    post:
+      operationId: createAttendance
+      tags: [attendance]
+      summary: Mark attendance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AttendanceInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendance"
+
+  /attendance/{id}:
+    delete:
+      operationId: deleteAttendance
+      tags: [attendance]
+      summary: Remove an attendance record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /tasks:
+    get:
+      operationId: listTasks
+      tags: [tasks]
+      summary: List all tasks
+      responses:
+        "200":
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      operationId: createTask
+      tags: [tasks]
+      summary: Create a task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{id}:
+    patch:
+      operationId: updateTask
+      tags: [tasks]
+      summary: Update a task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteTask
+      tags: [tasks]
+      summary: Delete a task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /fundraisers:
+    get:
+      operationId: listFundraisers
+      tags: [fundraisers]
+      summary: List all fundraisers
+      responses:
+        "200":
+          description: List of fundraisers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Fundraiser"
+    post:
+      operationId: createFundraiser
+      tags: [fundraisers]
+      summary: Create a fundraiser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FundraiserInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fundraiser"
+
+  /fundraisers/{id}:
+    patch:
+      operationId: updateFundraiser
+      tags: [fundraisers]
+      summary: Update a fundraiser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FundraiserUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fundraiser"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteFundraiser
+      tags: [fundraisers]
+      summary: Delete a fundraiser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard summary statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +454,289 @@ components:
       required:
         - status
 
+    Member:
+      type: object
+      required: [id, name, email, role, grade, joinedAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        phone:
+          type: ["string", "null"]
+        grade:
+          type: string
+        joinedAt:
+          type: string
+
+    MemberInput:
+      type: object
+      required: [name, email, role, grade]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+        role:
+          type: string
+        phone:
+          type: string
+        grade:
+          type: string
+
+    MemberUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+        role:
+          type: string
+        phone:
+          type: string
+        grade:
+          type: string
+
+    Event:
+      type: object
+      required: [id, title, date, type]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        date:
+          type: string
+        type:
+          type: string
+        location:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+
+    EventInput:
+      type: object
+      required: [title, date, type]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        date:
+          type: string
+        type:
+          type: string
+        location:
+          type: string
+        description:
+          type: string
+
+    EventUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        date:
+          type: string
+        type:
+          type: string
+        location:
+          type: string
+        description:
+          type: string
+
+    Attendance:
+      type: object
+      required: [id, eventId, memberId]
+      properties:
+        id:
+          type: integer
+        eventId:
+          type: integer
+        memberId:
+          type: integer
+        note:
+          type: ["string", "null"]
+        markedAt:
+          type: string
+
+    AttendanceInput:
+      type: object
+      required: [eventId, memberId]
+      properties:
+        eventId:
+          type: integer
+        memberId:
+          type: integer
+        note:
+          type: string
+
+    Task:
+      type: object
+      required: [id, title, status, priority]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        status:
+          type: string
+        priority:
+          type: string
+        assignedTo:
+          type: ["integer", "null"]
+        dueDate:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    TaskInput:
+      type: object
+      required: [title, status, priority]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        status:
+          type: string
+        priority:
+          type: string
+        assignedTo:
+          type: integer
+        dueDate:
+          type: string
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        status:
+          type: string
+        priority:
+          type: string
+        assignedTo:
+          type: integer
+        dueDate:
+          type: string
+
+    Fundraiser:
+      type: object
+      required: [id, title, goalAmount, raisedAmount, status]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        goalAmount:
+          type: number
+        raisedAmount:
+          type: number
+        status:
+          type: string
+        startDate:
+          type: ["string", "null"]
+        endDate:
+          type: ["string", "null"]
+
+    FundraiserInput:
+      type: object
+      required: [title, goalAmount, raisedAmount, status]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        goalAmount:
+          type: number
+        raisedAmount:
+          type: number
+        status:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+
+    FundraiserUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        goalAmount:
+          type: number
+        raisedAmount:
+          type: number
+        status:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+
+    DashboardStats:
+      type: object
+      required: [totalMembers, upcomingEvents, openTasks, activeFundraisers, totalFundsRaised, totalFundsGoal, membersByRole, eventsByType, tasksByStatus]
+      properties:
+        totalMembers:
+          type: integer
+        upcomingEvents:
+          type: integer
+        openTasks:
+          type: integer
+        activeFundraisers:
+          type: integer
+        totalFundsRaised:
+          type: number
+        totalFundsGoal:
+          type: number
+        membersByRole:
+          type: array
+          items:
+            type: object
+            required: [role, count]
+            properties:
+              role:
+                type: string
+              count:
+                type: integer
+        eventsByType:
+          type: array
+          items:
+            type: object
+            required: [type, count]
+            properties:
+              type:
+                type: string
+              count:
+                type: integer
+        tasksByStatus:
+          type: array
+          items:
+            type: object
+            required: [status, count]
+            properties:
+              status:
+                type: string
+              count:
+                type: integer
