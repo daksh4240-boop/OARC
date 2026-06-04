@@ -22,7 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
               <Users className="w-5 h-5" />
             </div>
-            ClubHub
+            OARC
           </div>
         </div>
         <div className="flex-1 overflow-y-auto py-6 px-4">
@@ -58,7 +58,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div className="w-6 h-6 rounded bg-primary flex items-center justify-center text-primary-foreground">
               <Users className="w-4 h-4" />
             </div>
-            ClubHub
+            OARC
           </div>
           {/* Add a simple mobile menu or just rely on a drawer if we had one. Keeping it simple for now. */}
         </div>
