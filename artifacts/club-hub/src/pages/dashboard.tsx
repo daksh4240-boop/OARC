@@ -1,7 +1,8 @@
-import { useGetDashboardStats } from "@workspace/api-client-react";
+import { useGetDashboardStats, useListEvents } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users, Calendar as CalendarIcon, CheckSquare, Target, DollarSign } from "lucide-react";
+import { Users, Calendar as CalendarIcon, CheckSquare, DollarSign, ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 import { motion } from "framer-motion";
 import {
   BarChart,
@@ -11,10 +12,14 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
+
+const eventTypeColors: Record<string, string> = {
+  meeting: "bg-blue-100 text-blue-700",
+  event: "bg-orange-100 text-orange-700",
+  other: "bg-green-100 text-green-700",
+  fundraiser: "bg-purple-100 text-purple-700",
+};
 
 const container = {
   hidden: { opacity: 0 },
@@ -31,6 +36,7 @@ const item = {
 
 export default function Dashboard() {
   const { data: stats, isLoading } = useGetDashboardStats();
+  const { data: events } = useListEvents();
 
   if (isLoading) {
     return (
@@ -120,36 +126,56 @@ export default function Dashboard() {
       <div className="grid gap-4 md:grid-cols-2">
         <motion.div variants={item}>
           <Card className="col-span-1 h-full">
-            <CardHeader>
-              <CardTitle>Members by Role</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle>Upcoming Events</CardTitle>
+              <Link href="/calendar" className="flex items-center gap-1 text-xs text-primary hover:underline font-medium">
+                View calendar <ArrowRight className="h-3 w-3" />
+              </Link>
             </CardHeader>
-            <CardContent className="h-[300px]">
-              {stats.membersByRole.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={stats.membersByRole}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="count"
-                      nameKey="role"
-                    >
-                      {stats.membersByRole.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: 'var(--shadow-md)' }}
-                      formatter={(value, name) => [value, name]}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-full flex items-center justify-center text-muted-foreground">No data available</div>
-              )}
+            <CardContent>
+              {(() => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const upcoming = (events ?? [])
+                  .filter(e => new Date(e.startDate) >= today)
+                  .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+                  .slice(0, 5);
+
+                if (upcoming.length === 0) {
+                  return (
+                    <div className="h-[260px] flex flex-col items-center justify-center text-muted-foreground gap-2">
+                      <CalendarIcon className="h-8 w-8 opacity-30" />
+                      <p className="text-sm">No upcoming events</p>
+                      <Link href="/calendar" className="text-xs text-primary hover:underline">Add one in the calendar</Link>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div className="space-y-2">
+                    {upcoming.map(ev => {
+                      const date = new Date(ev.startDate + "T00:00:00");
+                      const month = date.toLocaleDateString("en-US", { month: "short" });
+                      const day = date.getDate();
+                      return (
+                        <div key={ev.id} className="flex items-center gap-3 rounded-lg border px-3 py-2.5 hover:bg-muted/40 transition-colors">
+                          <div className="flex flex-col items-center justify-center w-10 shrink-0 text-center">
+                            <span className="text-[10px] uppercase font-semibold text-muted-foreground leading-none">{month}</span>
+                            <span className="text-lg font-bold leading-tight text-foreground">{day}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{ev.title}</p>
+                            {ev.location && <p className="text-xs text-muted-foreground truncate">{ev.location}</p>}
+                          </div>
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium capitalize shrink-0 ${eventTypeColors[ev.type] ?? "bg-muted text-muted-foreground"}`}>
+                            {ev.type}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
             </CardContent>
           </Card>
         </motion.div>
