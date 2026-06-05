@@ -39,6 +39,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
+import { useAuth } from "@/context/auth";
 
 const roles = ["President", "Vice President", "Treasurer", "Secretary", "Service Coordinator", "Publicity", "Historian", "At-Large", "Member"];
 const roleOrder = Object.fromEntries(roles.map((r, i) => [r.toLowerCase(), i]));
@@ -55,6 +56,7 @@ const memberSchema = z.object({
 type MemberFormValues = z.infer<typeof memberSchema>;
 
 export default function Members() {
+  const { isAuthenticated } = useAuth();
   const { data: members, isLoading } = useListMembers();
   const [search, setSearch] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -148,11 +150,13 @@ export default function Members() {
             setIsAddOpen(true);
           }
         }}>
-          <DialogTrigger asChild>
-            <Button data-testid="button-add-member">
-              <Plus className="w-4 h-4 mr-2" /> Add Member
-            </Button>
-          </DialogTrigger>
+          {isAuthenticated && (
+            <DialogTrigger asChild>
+              <Button data-testid="button-add-member">
+                <Plus className="w-4 h-4 mr-2" /> Add Member
+              </Button>
+            </DialogTrigger>
+          )}
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{editingMember ? "Edit Member" : "Add Member"}</DialogTitle>
@@ -305,23 +309,29 @@ export default function Members() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem 
-                            onClick={() => {
-                              form.reset({
-                                name: member.name,
-                                email: member.email,
-                                role: member.role,
-                                grade: member.grade,
-                                phone: member.phone || "",
-                              });
-                              setEditingMember(member);
-                            }}
-                          >
-                            <Pencil className="mr-2 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setDeletingMember(member)}>
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
+                          {isAuthenticated ? (
+                            <>
+                              <DropdownMenuItem 
+                                onClick={() => {
+                                  form.reset({
+                                    name: member.name,
+                                    email: member.email,
+                                    role: member.role,
+                                    grade: member.grade,
+                                    phone: member.phone || "",
+                                  });
+                                  setEditingMember(member);
+                                }}
+                              >
+                                <Pencil className="mr-2 h-4 w-4" /> Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setDeletingMember(member)}>
+                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                              </DropdownMenuItem>
+                            </>
+                          ) : (
+                            <DropdownMenuItem disabled>Sign in to edit</DropdownMenuItem>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>

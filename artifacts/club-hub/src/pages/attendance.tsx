@@ -13,8 +13,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
+import { useAuth } from "@/context/auth";
 
 export default function Attendance() {
+  const { isAuthenticated } = useAuth();
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
   
   const { data: events, isLoading: loadingEvents } = useListEvents();
@@ -114,11 +116,12 @@ export default function Attendance() {
                     return (
                       <label 
                         key={member.id}
-                        className={`flex items-center gap-4 p-4 hover:bg-muted/50 cursor-pointer transition-colors ${isAttending ? 'bg-primary/5' : ''}`}
+                        className={`flex items-center gap-4 p-4 transition-colors ${isAttending ? 'bg-primary/5' : ''} ${isAuthenticated ? 'hover:bg-muted/50 cursor-pointer' : 'cursor-default'}`}
                       >
                         <Checkbox 
                           checked={isAttending}
-                          onCheckedChange={(checked) => handleToggleAttendance(member.id, !!checked, record?.id)}
+                          onCheckedChange={isAuthenticated ? (checked) => handleToggleAttendance(member.id, !!checked, record?.id) : undefined}
+                          disabled={!isAuthenticated}
                           data-testid={`checkbox-attendance-${member.id}`}
                         />
                         <div className="flex-1">

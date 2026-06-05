@@ -1,6 +1,8 @@
 import { Link, useLocation } from "wouter";
-import { Users, Calendar, CheckSquare, ClipboardCheck, LayoutDashboard } from "lucide-react";
+import { Users, Calendar, CheckSquare, ClipboardCheck, LayoutDashboard, LogIn, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/auth";
+import { Button } from "@/components/ui/button";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -12,6 +14,7 @@ const navigation = [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
+  const { isAuthenticated, email, logout } = useAuth();
 
   return (
     <div className="flex min-h-screen w-full bg-background">
@@ -48,19 +51,56 @@ export function Layout({ children }: { children: React.ReactNode }) {
             })}
           </nav>
         </div>
+
+        {/* Auth footer */}
+        <div className="border-t border-sidebar-border p-4">
+          {isAuthenticated ? (
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground truncate px-1" title={email ?? ""}>
+                {email}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start text-muted-foreground hover:text-foreground"
+                onClick={logout}
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign out
+              </Button>
+            </div>
+          ) : (
+            <Link href="/login">
+              <Button variant="outline" size="sm" className="w-full justify-start">
+                <LogIn className="w-4 h-4 mr-2" />
+                Sign in to edit
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Main Content */}
       <div className="md:pl-64 flex flex-col flex-1 w-full">
         {/* Mobile Header */}
-        <div className="md:hidden flex h-16 items-center px-4 border-b bg-background z-40 sticky top-0">
+        <div className="md:hidden flex h-16 items-center justify-between px-4 border-b bg-background z-40 sticky top-0">
           <div className="flex items-center gap-2 text-primary font-bold text-lg font-heading tracking-tight">
             <div className="w-6 h-6 rounded bg-primary flex items-center justify-center text-primary-foreground">
               <Users className="w-4 h-4" />
             </div>
             OARC
           </div>
-          {/* Add a simple mobile menu or just rely on a drawer if we had one. Keeping it simple for now. */}
+          {isAuthenticated ? (
+            <Button variant="ghost" size="sm" onClick={logout} className="text-muted-foreground">
+              <LogOut className="w-4 h-4" />
+            </Button>
+          ) : (
+            <Link href="/login">
+              <Button variant="ghost" size="sm" className="text-primary">
+                <LogIn className="w-4 h-4 mr-1" /> Sign in
+              </Button>
+            </Link>
+          )}
         </div>
 
         <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full">

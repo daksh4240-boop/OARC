@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/auth";
 
 const eventSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -46,6 +47,7 @@ export default function Calendar() {
   const [isDayDetailsOpen, setIsDayDetailsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("events");
 
+  const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -234,9 +236,9 @@ export default function Calendar() {
           
           <div className="flex-1 overflow-y-auto pr-2 pb-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className={cn("w-full", isAuthenticated ? "grid grid-cols-2" : "grid grid-cols-1")}>
                 <TabsTrigger value="events">Day's Events</TabsTrigger>
-                <TabsTrigger value="add">Add New...</TabsTrigger>
+                {isAuthenticated && <TabsTrigger value="add">Add New...</TabsTrigger>}
               </TabsList>
               
               <TabsContent value="events" className="mt-4 space-y-4">

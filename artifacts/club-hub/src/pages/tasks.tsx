@@ -41,6 +41,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@/context/auth";
 
 const taskSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -66,6 +67,7 @@ const priorityColors: Record<string, string> = {
 };
 
 export default function Tasks() {
+  const { isAuthenticated } = useAuth();
   const { data: tasks, isLoading: loadingTasks } = useListTasks();
   const { data: members, isLoading: loadingMembers } = useListMembers();
   
@@ -275,11 +277,13 @@ export default function Tasks() {
           setIsAddOpen(open);
           if (!open) form.reset({ title: "", description: "", status: "todo", priority: "medium", assignedTo: "", dueDate: "" });
         }}>
-          <DialogTrigger asChild>
-            <Button data-testid="button-add-task">
-              <Plus className="w-4 h-4 mr-2" /> Add Task
-            </Button>
-          </DialogTrigger>
+          {isAuthenticated && (
+            <DialogTrigger asChild>
+              <Button data-testid="button-add-task">
+                <Plus className="w-4 h-4 mr-2" /> Add Task
+              </Button>
+            </DialogTrigger>
+          )}
           <DialogContent>
             <DialogHeader><DialogTitle>Add Task</DialogTitle></DialogHeader>
             {TaskForm}
@@ -381,22 +385,28 @@ export default function Tasks() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => {
-                        form.reset({
-                          title: task.title,
-                          description: task.description || "",
-                          status: task.status,
-                          priority: task.priority,
-                          assignedTo: task.assignedTo ? task.assignedTo.toString() : "unassigned",
-                          dueDate: task.dueDate || "",
-                        });
-                        setEditingTask(task);
-                      }}>
-                        <Pencil className="mr-2 h-4 w-4" /> Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setDeletingTask(task)}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Delete
-                      </DropdownMenuItem>
+                      {isAuthenticated ? (
+                        <>
+                          <DropdownMenuItem onClick={() => {
+                            form.reset({
+                              title: task.title,
+                              description: task.description || "",
+                              status: task.status,
+                              priority: task.priority,
+                              assignedTo: task.assignedTo ? task.assignedTo.toString() : "unassigned",
+                              dueDate: task.dueDate || "",
+                            });
+                            setEditingTask(task);
+                          }}>
+                            <Pencil className="mr-2 h-4 w-4" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setDeletingTask(task)}>
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete
+                          </DropdownMenuItem>
+                        </>
+                      ) : (
+                        <DropdownMenuItem disabled>Sign in to edit</DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
