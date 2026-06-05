@@ -43,6 +43,18 @@ import { useAuth } from "@/context/auth";
 
 const roles = ["President", "Vice President", "Treasurer", "Secretary", "Service Coordinator", "Publicity", "Historian", "At-Large", "Member"];
 const roleOrder = Object.fromEntries(roles.map((r, i) => [r.toLowerCase(), i]));
+
+const roleColors: Record<string, string> = {
+  "President":           "bg-purple-600 text-white",
+  "Vice President":      "bg-blue-600 text-white",
+  "Treasurer":           "bg-emerald-600 text-white",
+  "Secretary":           "bg-cyan-600 text-white",
+  "Service Coordinator": "bg-orange-500 text-white",
+  "Publicity":           "bg-pink-500 text-white",
+  "Historian":           "bg-amber-500 text-white",
+  "At-Large":            "bg-slate-500 text-white",
+  "Member":              "bg-gray-400 text-white",
+};
 const grades = ["10th", "11th", "12th"];
 
 const memberSchema = z.object({
@@ -291,7 +303,7 @@ export default function Members() {
                   >
                     <td className="p-4 align-middle font-medium">{member.name}</td>
                     <td className="p-4 align-middle">
-                      <Badge variant={member.role === 'At-Large' ? 'secondary' : 'default'}>
+                      <Badge className={roleColors[member.role] ?? "bg-gray-400 text-white"}>
                         {member.role}
                       </Badge>
                     </td>
