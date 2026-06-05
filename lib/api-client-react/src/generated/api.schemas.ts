@@ -179,6 +179,17 @@ export interface DashboardStats {
   tasksByStatus: DashboardStatsTasksByStatusItem[];
 }
 
+export interface Announcement {
+  id: number;
+  content: string;
+  authorEmail: string;
+  createdAt: string;
+}
+
+export interface AnnouncementInput {
+  content: string;
+}
+
 export type ListAttendanceParams = {
 eventId?: number;
 memberId?: number;

@@ -6,6 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './announcement';
+export * from './announcementInput';
 export * from './attendance';
 export * from './attendanceInput';
 export * from './dashboardStats';

@@ -9,6 +9,34 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary List all announcements
+ */
+export const ListAnnouncementsResponseItem = zod.object({
+  "id": zod.number(),
+  "content": zod.string(),
+  "authorEmail": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+export const ListAnnouncementsResponse = zod.array(ListAnnouncementsResponseItem)
+
+
+/**
+ * @summary Create an announcement
+ */
+export const CreateAnnouncementBody = zod.object({
+  "content": zod.string()
+})
+
+
+/**
+ * @summary Delete an announcement
+ */
+export const DeleteAnnouncementParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
  * Returns server health status
  * @summary Health check
  */

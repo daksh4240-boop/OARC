@@ -7,6 +7,7 @@ import attendanceRouter from "./attendance";
 import tasksRouter from "./tasks";
 import fundraisersRouter from "./fundraisers";
 import dashboardRouter from "./dashboard";
+import announcementsRouter from "./announcements";
 
 const router: IRouter = Router();
 
@@ -32,5 +33,6 @@ router.use(attendanceRouter);
 router.use(tasksRouter);
 router.use(fundraisersRouter);
 router.use(dashboardRouter);
+router.use(announcementsRouter);
 
 export default router;

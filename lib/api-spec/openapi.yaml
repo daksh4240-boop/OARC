@@ -22,7 +22,56 @@ tags:
     description: Fundraiser operations
   - name: dashboard
     description: Dashboard operations
+  - name: announcements
+    description: Announcement operations
 paths:
+  /announcements:
+    get:
+      operationId: listAnnouncements
+      tags: [announcements]
+      summary: List all announcements
+      responses:
+        "200":
+          description: List of announcements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Announcement"
+    post:
+      operationId: createAnnouncement
+      tags: [announcements]
+      summary: Create an announcement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnnouncementInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Announcement"
+
+  /announcements/{id}:
+    delete:
+      operationId: deleteAnnouncement
+      tags: [announcements]
+      summary: Delete an announcement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
   /healthz:
     get:
       operationId: healthCheck
@@ -740,3 +789,24 @@ components:
                 type: string
               count:
                 type: integer
+
+    Announcement:
+      type: object
+      required: [id, content, authorEmail, createdAt]
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        authorEmail:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    AnnouncementInput:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
