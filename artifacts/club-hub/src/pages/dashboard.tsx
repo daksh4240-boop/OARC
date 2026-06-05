@@ -1,7 +1,7 @@
 import { useGetDashboardStats, useListEvents } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users, Calendar as CalendarIcon, CheckSquare, DollarSign, ArrowRight } from "lucide-react";
+import { Users, Calendar as CalendarIcon, CheckSquare, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import {
@@ -101,24 +101,6 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-chart-4">{stats.openTasks}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Funds Raised</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-chart-3">${stats.totalFundsRaised}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              of ${stats.totalFundsGoal} goal
-            </p>
-            <div className="w-full h-1.5 bg-muted rounded-full mt-3 overflow-hidden">
-              <div 
-                className="h-full bg-chart-3 rounded-full" 
-                style={{ width: `${fundsProgress}%` }}
-              />
-            </div>
           </CardContent>
         </Card>
       </motion.div>
