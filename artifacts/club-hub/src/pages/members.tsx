@@ -40,7 +40,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 
-const roles = ["President", "Vice President", "Secretary", "Treasurer", "Historian", "Service Coordinator", "Publicity", "At-Large"];
+const roles = ["President", "Vice President", "Treasurer", "Secretary", "Service Coordinator", "Publicity", "Historian", "At-Large", "Member"];
+const roleOrder = Object.fromEntries(roles.map((r, i) => [r.toLowerCase(), i]));
 const grades = ["10th", "11th", "12th"];
 
 const memberSchema = z.object({
@@ -120,10 +121,16 @@ export default function Members() {
     );
   };
 
-  const filteredMembers = members?.filter(m => 
-    m.name.toLowerCase().includes(search.toLowerCase()) || 
-    m.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredMembers = members
+    ?.filter(m =>
+      m.name.toLowerCase().includes(search.toLowerCase()) ||
+      m.email.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => {
+      const aOrder = roleOrder[a.role.toLowerCase()] ?? 999;
+      const bOrder = roleOrder[b.role.toLowerCase()] ?? 999;
+      return aOrder - bOrder;
+    });
 
   return (
     <div className="space-y-6">
