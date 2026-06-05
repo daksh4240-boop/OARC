@@ -7,7 +7,7 @@ interface AuthState {
 }
 
 interface AuthContextValue extends AuthState {
-  login: (email: string) => Promise<{ error?: string }>;
+  login: (email: string, passcode: string) => Promise<{ error?: string }>;
   logout: () => Promise<void>;
 }
 
@@ -40,13 +40,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkSession();
   }, [checkSession]);
 
-  const login = useCallback(async (email: string) => {
+  const login = useCallback(async (email: string, passcode: string) => {
     try {
       const res = await fetch(`${BASE}/api/auth/login`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, passcode }),
       });
       const data = await res.json() as { email?: string; error?: string };
       if (res.ok && data.email) {

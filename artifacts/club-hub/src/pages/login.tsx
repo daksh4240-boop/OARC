@@ -7,6 +7,7 @@ import { Users, LogIn } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
+  const [passcode, setPasscode] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -16,7 +17,7 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    const result = await login(email.trim());
+    const result = await login(email.trim(), passcode.trim());
     setIsLoading(false);
     if (result.error) {
       setError(result.error);
@@ -24,6 +25,8 @@ export default function Login() {
       navigate("/");
     }
   };
+
+  const canSubmit = email.trim() && passcode.trim();
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -43,7 +46,7 @@ export default function Login() {
         <div className="bg-card border rounded-2xl p-6 shadow-sm space-y-5">
           <div>
             <h2 className="text-lg font-semibold text-foreground">Sign in</h2>
-            <p className="text-sm text-muted-foreground mt-0.5">Enter your school email to continue</p>
+            <p className="text-sm text-muted-foreground mt-0.5">Enter your school email and passcode to continue</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -62,13 +65,28 @@ export default function Login() {
               />
             </div>
 
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-foreground" htmlFor="passcode">
+                Passcode
+              </label>
+              <Input
+                id="passcode"
+                type="password"
+                placeholder="Enter club passcode"
+                value={passcode}
+                onChange={(e) => { setPasscode(e.target.value); setError(""); }}
+                autoComplete="current-password"
+                required
+              />
+            </div>
+
             {error && (
               <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2">
                 {error}
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={isLoading || !email.trim()}>
+            <Button type="submit" className="w-full" disabled={isLoading || !canSubmit}>
               <LogIn className="w-4 h-4 mr-2" />
               {isLoading ? "Signing in…" : "Sign in"}
             </Button>

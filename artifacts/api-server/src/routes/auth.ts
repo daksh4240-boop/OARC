@@ -17,12 +17,18 @@ const ALLOWED_EMAILS = new Set([
   "1076140@student.auhsd.us",
 ]);
 
+const PASSCODE = "99212354";
+
 const router = Router();
 
 router.post("/auth/login", (req: Request, res: Response) => {
-  const { email } = req.body as { email?: string };
+  const { email, passcode } = req.body as { email?: string; passcode?: string };
   if (!email || typeof email !== "string") {
     res.status(400).json({ error: "Email is required" });
+    return;
+  }
+  if (!passcode || passcode.trim() !== PASSCODE) {
+    res.status(403).json({ error: "Incorrect passcode." });
     return;
   }
   const normalized = email.trim().toLowerCase();
