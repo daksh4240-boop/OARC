@@ -5,6 +5,7 @@ import {
   useListAnnouncements,
   useCreateAnnouncement,
   useDeleteAnnouncement,
+  getListAnnouncementsQueryKey,
 } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,7 +45,7 @@ function AnnouncementsPanel() {
   const [text, setText] = useState("");
 
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: ["/api/announcements"] });
+    queryClient.invalidateQueries({ queryKey: getListAnnouncementsQueryKey() });
 
   const handlePost = async () => {
     if (!text.trim()) return;

@@ -16,12 +16,15 @@ router.get("/announcements", async (_req, res): Promise<void> => {
 
 router.post("/announcements", async (req, res): Promise<void> => {
   const session = (req.session as any);
-  const parsed = CreateAnnouncementBody.safeParse({ ...req.body, authorEmail: session?.email ?? "" });
+  const parsed = CreateAnnouncementBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [row] = await db.insert(announcementsTable).values(parsed.data).returning();
+  const [row] = await db.insert(announcementsTable).values({
+    content: parsed.data.content,
+    authorEmail: session?.email ?? "unknown",
+  }).returning();
   res.status(201).json(row);
 });
 
