@@ -172,8 +172,7 @@ export default function Dashboard() {
       animate="show"
     >
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground font-heading">Club Overview</h1>
-        <p className="text-muted-foreground">Here's what's happening in your club right now.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground font-heading">Oxford Academy Red Cross Overview</h1>
       </div>
 
       {/* ── Announcements (topmost) ── */}
