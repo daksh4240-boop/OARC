@@ -1,3 +1,4 @@
+import { parseCalendarDate } from "@/lib/calendar-date";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { 
@@ -80,7 +81,7 @@ export default function Attendance() {
             <SelectContent>
               {events?.map(event => (
                 <SelectItem key={event.id} value={event.id.toString()}>
-                  {event.title} ({new Date(event.date).toLocaleDateString()})
+                  {event.title} ({parseCalendarDate(event.date).toLocaleDateString()})
                 </SelectItem>
               ))}
             </SelectContent>
@@ -121,7 +122,7 @@ export default function Attendance() {
                         <Checkbox 
                           checked={isAttending}
                           onCheckedChange={isAuthenticated ? (checked) => handleToggleAttendance(member.id, !!checked, record?.id) : undefined}
-                          disabled={!isAuthenticated}
+                          disabled={!isAuthenticated || createAttendance.isPending || deleteAttendance.isPending}
                           data-testid={`checkbox-attendance-${member.id}`}
                         />
                         <div className="flex-1">

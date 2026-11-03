@@ -662,9 +662,9 @@ components:
         priority:
           type: string
         assignedTo:
-          type: integer
+          type: ["integer", "null"]
         dueDate:
-          type: string
+          type: ["string", "null"]
 
     TaskUpdate:
       type: object
@@ -679,9 +679,9 @@ components:
         priority:
           type: string
         assignedTo:
-          type: integer
+          type: ["integer", "null"]
         dueDate:
-          type: string
+          type: ["string", "null"]
 
     Fundraiser:
       type: object
@@ -720,9 +720,9 @@ components:
         status:
           type: string
         startDate:
-          type: string
+          type: ["string", "null"]
         endDate:
-          type: string
+          type: ["string", "null"]
 
     FundraiserUpdate:
       type: object
@@ -739,9 +739,9 @@ components:
         status:
           type: string
         startDate:
-          type: string
+          type: ["string", "null"]
         endDate:
-          type: string
+          type: ["string", "null"]
 
     DashboardStats:
       type: object

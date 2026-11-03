@@ -3,6 +3,7 @@ import cors from "cors";
 import session from "express-session";
 import pinoHttp from "pino-http";
 import router from "./routes";
+import { getSessionSecret } from "./lib/session";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -28,13 +29,14 @@ app.use(
     },
   }),
 );
-app.use(cors({ origin: true, credentials: true }));
+const allowedOrigins = (process.env.CORS_ORIGINS ?? "").split(",").map((origin) => origin.trim()).filter(Boolean);
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "oarc-dev-secret",
+    secret: getSessionSecret(),
     resave: false,
     saveUninitialized: false,
     cookie: {

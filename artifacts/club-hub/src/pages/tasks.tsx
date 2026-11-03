@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { 
+  getGetDashboardStatsQueryKey,
   useListTasks, getListTasksQueryKey, 
   useCreateTask, useUpdateTask, useDeleteTask,
   useListMembers 
@@ -99,8 +100,8 @@ export default function Tasks() {
   const onSubmit = (data: TaskFormValues) => {
     const payload = {
       ...data,
-      assignedTo: data.assignedTo && data.assignedTo !== "unassigned" ? Number(data.assignedTo) : undefined,
-      dueDate: data.dueDate || undefined,
+      assignedTo: data.assignedTo && data.assignedTo !== "unassigned" ? Number(data.assignedTo) : null,
+      dueDate: data.dueDate || null,
     };
 
     if (editingTask) {
@@ -109,6 +110,7 @@ export default function Tasks() {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getListTasksQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
             toast({ title: "Task updated successfully" });
             setEditingTask(null);
             form.reset();
@@ -121,6 +123,7 @@ export default function Tasks() {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getListTasksQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
             toast({ title: "Task added successfully" });
             setIsAddOpen(false);
             form.reset();
@@ -137,6 +140,7 @@ export default function Tasks() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListTasksQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
           toast({ title: "Task deleted successfully" });
           setDeletingTask(null);
         },

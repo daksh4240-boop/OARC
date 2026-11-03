@@ -102,8 +102,10 @@ export interface TaskInput {
   description?: string;
   status: string;
   priority: string;
-  assignedTo?: number;
-  dueDate?: string;
+  /** @nullable */
+  assignedTo?: number | null;
+  /** @nullable */
+  dueDate?: string | null;
 }
 
 export interface TaskUpdate {
@@ -112,8 +114,10 @@ export interface TaskUpdate {
   description?: string;
   status?: string;
   priority?: string;
-  assignedTo?: number;
-  dueDate?: string;
+  /** @nullable */
+  assignedTo?: number | null;
+  /** @nullable */
+  dueDate?: string | null;
 }
 
 export interface Fundraiser {
@@ -137,8 +141,10 @@ export interface FundraiserInput {
   goalAmount: number;
   raisedAmount: number;
   status: string;
-  startDate?: string;
-  endDate?: string;
+  /** @nullable */
+  startDate?: string | null;
+  /** @nullable */
+  endDate?: string | null;
 }
 
 export interface FundraiserUpdate {
@@ -148,8 +154,10 @@ export interface FundraiserUpdate {
   goalAmount?: number;
   raisedAmount?: number;
   status?: string;
-  startDate?: string;
-  endDate?: string;
+  /** @nullable */
+  startDate?: string | null;
+  /** @nullable */
+  endDate?: string | null;
 }
 
 export type DashboardStatsMembersByRoleItem = {

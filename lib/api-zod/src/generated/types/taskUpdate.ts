@@ -12,6 +12,8 @@ export interface TaskUpdate {
   description?: string;
   status?: string;
   priority?: string;
-  assignedTo?: number;
-  dueDate?: string;
+  /** @nullable */
+  assignedTo?: number | null;
+  /** @nullable */
+  dueDate?: string | null;
 }

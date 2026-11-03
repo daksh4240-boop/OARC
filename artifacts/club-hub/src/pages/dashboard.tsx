@@ -1,3 +1,4 @@
+import { parseCalendarDate } from "@/lib/calendar-date";
 import { useState } from "react";
 import {
   useGetDashboardStats,
@@ -226,8 +227,8 @@ export default function Dashboard() {
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
                 const upcoming = (events ?? [])
-                  .filter(e => new Date(e.date) >= today)
-                  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                  .filter(e => parseCalendarDate(e.date) >= today)
+                  .sort((a, b) => a.date.localeCompare(b.date))
                   .slice(0, 5);
 
                 if (upcoming.length === 0) {
@@ -243,7 +244,7 @@ export default function Dashboard() {
                 return (
                   <div className="space-y-2">
                     {upcoming.map(ev => {
-                      const date = new Date(ev.date + "T00:00:00");
+                      const date = parseCalendarDate(ev.date);
                       const month = date.toLocaleDateString("en-US", { month: "short" });
                       const day = date.getDate();
                       return (
