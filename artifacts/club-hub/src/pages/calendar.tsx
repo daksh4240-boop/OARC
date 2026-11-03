@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { 
+  getGetDashboardStatsQueryKey,
   useListEvents, getListEventsQueryKey, useCreateEvent, useUpdateEvent, useDeleteEvent,
   useListFundraisers, getListFundraisersQueryKey, useCreateFundraiser, useUpdateFundraiser, useDeleteFundraiser
 } from "@workspace/api-client-react";
@@ -85,6 +86,7 @@ export default function Calendar() {
       updateEvent.mutate({ id: editingEvent.id, data }, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListEventsQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
           toast({ title: "Event updated" });
           eventForm.reset();
           setEditingEvent(null);
@@ -95,6 +97,7 @@ export default function Calendar() {
       createEvent.mutate({ data }, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListEventsQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
           toast({ title: "Event created" });
           eventForm.reset();
           setIsDayDetailsOpen(false);
@@ -105,11 +108,12 @@ export default function Calendar() {
 
   /* ── Fundraiser submit (create or update) ── */
   const onFundraiserSubmit = (data: z.infer<typeof fundraiserSchema>) => {
-    const payload = { ...data, startDate: data.startDate || undefined, endDate: data.endDate || undefined };
+    const payload = { ...data, startDate: data.startDate || null, endDate: data.endDate || null };
     if (editingFundraiser) {
       updateFundraiser.mutate({ id: editingFundraiser.id, data: payload }, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListFundraisersQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
           toast({ title: "Fundraiser updated" });
           fundraiserForm.reset();
           setEditingFundraiser(null);
@@ -120,6 +124,7 @@ export default function Calendar() {
       createFundraiser.mutate({ data: payload }, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListFundraisersQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
           toast({ title: "Fundraiser created" });
           fundraiserForm.reset();
           setIsDayDetailsOpen(false);
@@ -133,6 +138,7 @@ export default function Calendar() {
     deleteEvent.mutate({ id }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getListEventsQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
         toast({ title: "Event deleted" });
       }
     });
@@ -142,6 +148,7 @@ export default function Calendar() {
     deleteFundraiser.mutate({ id }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getListFundraisersQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
         toast({ title: "Fundraiser deleted" });
       }
     });
@@ -196,6 +203,8 @@ export default function Calendar() {
 
   const handleDayClick = (day: Date) => {
     setSelectedDay(day);
+    eventForm.reset();
+    fundraiserForm.reset();
     eventForm.setValue("date", format(day, "yyyy-MM-dd"));
     fundraiserForm.setValue("startDate", format(day, "yyyy-MM-dd"));
     setEditingEvent(null);

@@ -275,8 +275,8 @@ export const CreateTaskBody = zod.object({
   "description": zod.string().optional(),
   "status": zod.string(),
   "priority": zod.string(),
-  "assignedTo": zod.number().optional(),
-  "dueDate": zod.string().optional()
+  "assignedTo": zod.number().nullish(),
+  "dueDate": zod.string().nullish()
 })
 
 
@@ -295,8 +295,8 @@ export const UpdateTaskBody = zod.object({
   "description": zod.string().optional(),
   "status": zod.string().optional(),
   "priority": zod.string().optional(),
-  "assignedTo": zod.number().optional(),
-  "dueDate": zod.string().optional()
+  "assignedTo": zod.number().nullish(),
+  "dueDate": zod.string().nullish()
 })
 
 export const UpdateTaskResponse = zod.object({
@@ -347,8 +347,8 @@ export const CreateFundraiserBody = zod.object({
   "goalAmount": zod.number(),
   "raisedAmount": zod.number(),
   "status": zod.string(),
-  "startDate": zod.string().optional(),
-  "endDate": zod.string().optional()
+  "startDate": zod.string().nullish(),
+  "endDate": zod.string().nullish()
 })
 
 
@@ -368,8 +368,8 @@ export const UpdateFundraiserBody = zod.object({
   "goalAmount": zod.number().optional(),
   "raisedAmount": zod.number().optional(),
   "status": zod.string().optional(),
-  "startDate": zod.string().optional(),
-  "endDate": zod.string().optional()
+  "startDate": zod.string().nullish(),
+  "endDate": zod.string().nullish()
 })
 
 export const UpdateFundraiserResponse = zod.object({

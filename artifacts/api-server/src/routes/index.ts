@@ -1,6 +1,6 @@
 import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
 import healthRouter from "./health";
-import authRouter from "./auth";
+import { createAuthRouter } from "./auth";
 import membersRouter from "./members";
 import eventsRouter from "./events";
 import attendanceRouter from "./attendance";
@@ -12,13 +12,13 @@ import announcementsRouter from "./announcements";
 const router: IRouter = Router();
 
 router.use(healthRouter);
-router.use(authRouter);
+router.use(createAuthRouter());
 
 function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (["GET", "HEAD", "OPTIONS"].includes(req.method)) {
     return next();
   }
-  const email = (req.session as any)?.email;
+  const email = req.session.email;
   if (!email) {
     res.status(401).json({ error: "Authentication required. Please log in." });
     return;

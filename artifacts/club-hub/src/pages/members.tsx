@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { 
+  getGetDashboardStatsQueryKey,
   useListMembers, getListMembersQueryKey,
   useCreateMember, useUpdateMember, useDeleteMember 
 } from "@workspace/api-client-react";
@@ -100,6 +101,7 @@ export default function Members() {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getListMembersQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
             toast({ title: "Member updated successfully" });
             setEditingMember(null);
             form.reset();
@@ -112,6 +114,7 @@ export default function Members() {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getListMembersQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
             toast({ title: "Member added successfully" });
             setIsAddOpen(false);
             form.reset();
@@ -128,6 +131,7 @@ export default function Members() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListMembersQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
           toast({ title: "Member deleted successfully" });
           setDeletingMember(null);
         },

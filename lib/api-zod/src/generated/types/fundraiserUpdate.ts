@@ -13,6 +13,8 @@ export interface FundraiserUpdate {
   goalAmount?: number;
   raisedAmount?: number;
   status?: string;
-  startDate?: string;
-  endDate?: string;
+  /** @nullable */
+  startDate?: string | null;
+  /** @nullable */
+  endDate?: string | null;
 }
